@@ -66,13 +66,14 @@ def charRec(img, text_recs, adjust=False):
            continue
 
        image = Image.fromarray(partImg).convert('L')
-       text = keras_densenet(image)
+       text, rate, scale = keras_densenet(image)
        
        if len(text) > 0:
            results[index] = [rec]
            results[index].append(text)  # 识别文字
+           results[index].append(rate)
  
-   return results
+   return results, scale
 
 def model(img, adjust=False):
     """
@@ -82,6 +83,6 @@ def model(img, adjust=False):
     cfg_from_file('./ctpn/ctpn/text.yml')
     text_recs, img_framed, img = text_detect(img)
     text_recs = sort_box(text_recs)
-    result = charRec(img, text_recs, adjust)
-    return result, img_framed
+    result, scale = charRec(img, text_recs, adjust)
+    return result, img_framed, scale
 

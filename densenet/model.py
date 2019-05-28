@@ -27,11 +27,22 @@ if os.path.exists(modelPath):
 
 def decode(pred):
     char_list = []
+    rate = []
     pred_text = pred.argmax(axis=2)[0]
     for i in range(len(pred_text)):
         if pred_text[i] != nclass - 1 and ((not (i > 0 and pred_text[i] == pred_text[i - 1])) or (i > 1 and pred_text[i] == pred_text[i - 2])):
+            # rate.append()
+            r = pred[0][i][pred_text[i]]
+            if r < 0.96:
+                ra = np.argsort(pred[0][i])[::-1][:int(1/r)+1]
+                la = []
+                for v in ra:
+                    la.append({'c':characters[v], 'r': float(int(1e4*pred[0][i][v])/1.e4)})
+                rate.append(la)
+            else:
+                rate.append([{'c':characters[pred_text[i]], 'r': float(int(1e4*r)/1.e4)}])
             char_list.append(characters[pred_text[i]])
-    return u''.join(char_list)
+    return u''.join(char_list), rate
 
 def predict(img):
     width, height = img.size[0], img.size[1]
@@ -56,6 +67,6 @@ def predict(img):
 
     # out = K.get_value(K.ctc_decode(y_pred, input_length=np.ones(y_pred.shape[0]) * y_pred.shape[1])[0][0])[:, :]
     # out = u''.join([characters[x] for x in out[0]])
-    out = decode(y_pred)
+    out, rate = decode(y_pred)
 
-    return out
+    return out, rate, scale
