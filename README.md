@@ -1,3 +1,8 @@
+## Modify or Change
+连续预测 避免每次启动慢
+python sloan_api.py
+curl -v http://127.0.0.1:9436/ocr -F "image_file=@./test.jpg"
+
 ## 简介
 基于Tensorflow和Keras实现端到端的不定长中文字符检测和识别
 

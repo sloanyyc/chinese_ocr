@@ -43,7 +43,7 @@ def charRec(img, text_recs, adjust=False):
    """
    results = {}
    xDim, yDim = img.shape[1], img.shape[0]
-    
+   scale = 1.0
    for index, rec in enumerate(text_recs):
        xlength = int((rec[6] - rec[0]) * 0.1)
        ylength = int((rec[7] - rec[1]) * 0.2)

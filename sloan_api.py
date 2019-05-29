@@ -7,6 +7,7 @@
     image_width = 400
 """
 import json
+import traceback
 from io import BytesIO
 import os
 
@@ -86,25 +87,29 @@ def up_image():
             Image.fromarray(image_framed).save(dest_path)
             print("Mission complete, it took {:.3f}s".format(time.time() - t))
             print("\nRecognition Result:\n")
+            texts = []
             for key in result:
                 print(result[key][1])
+                texts.append(result[key][1])
                 value.append({'loc': [int(x) for x in result[key][0]],
                               'rate': result[key][2],'text': result[key][1]})
 
             e = time.time()
+            traceback.print_exc()
             print("识别结果: {}".format(json.dumps(value, ensure_ascii=False)))
             result = {
                 'error_code': 0,
                 'time': timec,  # 时间戳
                 'value': value,  # 预测的结果
+                'text': u'\n'.join(texts),
                 'scale': scale,  #
                 'author': 'sloanyyc',
                 'speed_time(ms)': int((e - s) * 1000)  # 识别耗费的时间
             }
             return json.dumps(result, ensure_ascii=False)
-        except:
+        except Exception as ex:
             e = time.time()
-            print('识别')
+            print('识别错误', ex)
             result = {
                 'error_code': 1004,
                 'time': timec,  # 时间戳

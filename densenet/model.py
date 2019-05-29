@@ -27,6 +27,7 @@ if os.path.exists(modelPath):
 
 def decode(pred):
     char_list = []
+    all_list = []
     rate = []
     pred_text = pred.argmax(axis=2)[0]
     for i in range(len(pred_text)):
@@ -39,9 +40,16 @@ def decode(pred):
                 for v in ra:
                     la.append({'c':characters[v], 'r': float(int(1e4*pred[0][i][v])/1.e4)})
                 rate.append(la)
-            else:
-                rate.append([{'c':characters[pred_text[i]], 'r': float(int(1e4*r)/1.e4)}])
+            elif (len(rate) > 0) and (type(rate[-1]) == list):
+                    rate.append(len(char_list))
+                # rate.append([{'c':characters[pred_text[i]], 'r': float(int(1e4*r)/1.e4)}])
             char_list.append(characters[pred_text[i]])
+            all_list.append(characters[pred_text[i]])
+        elif pred_text[i] != nclass - 1:
+            all_list.append('.')
+        else:
+            all_list.append('_')
+    rate.insert(0, u''.join(all_list))
     return u''.join(char_list), rate
 
 def predict(img):

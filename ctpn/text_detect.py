@@ -15,8 +15,8 @@ def resize_im(im, scale, max_scale=None):
     f = float(scale) / min(im.shape[0], im.shape[1])
     if max_scale != None and f * max(im.shape[0], im.shape[1]) > max_scale:
         f = float(max_scale) / max(im.shape[0], im.shape[1])
-    if f > 0.92 or f < 1.08:
-        return im, 1.0
+    # if f > 0.92 or f < 1.08:
+    #     return im, 1.0
     return cv2.resize(im, None, None, fx=f, fy=f, interpolation=cv2.INTER_LINEAR), f
 
 def load_tf_model():
